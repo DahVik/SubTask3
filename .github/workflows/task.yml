@@ -23,11 +23,23 @@ jobs:
           echo "::set-output name=url::$IMAGE_URL"
           
       - name: Post Image Comment
+        id: comment
         run: |
           ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           IMAGE_URL="${{ steps.meme.outputs.url }}"
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d '{"body": "![Image]('"$IMAGE_URL"')"}' \
-            "https://api.github.com/repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments"    
+          COMMENT_BODY="Here's the meme image: ![Image]('"$IMAGE_URL"')"
+          echo "::set-output name=comment_body::$COMMENT_BODY"
+
+      - name: Create Comment
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const issueNumber = context.issue.number;
+            const commentBody = ${{ steps.comment.outputs.comment_body }};
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            octokit.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: commentBody
+            });
