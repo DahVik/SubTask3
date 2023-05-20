@@ -3,24 +3,22 @@ name: Meme on issue
 on:
   issues:
     types: [opened, closed]
-  
-  workflow_dispatch:
 
 jobs:
   post_meme:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-       
+
       - name: Get Meme URL
         id: meme
         run: |
-          IMAGE_PATH=".\SubTask3\meme1.jpg"
-          IMAGE_URL="https://raw.githubusercontent.com/DahVik/SubTask3/main/$IMAGE_PATH"
+          IMAGE_PATH="./SubTask3/meme1.jpg"
+          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/$IMAGE_PATH"
           echo "::set-output name=url::$IMAGE_URL"
-          
+
       - name: Post Image Comment
         id: comment
         run: |
@@ -36,8 +34,8 @@ jobs:
           script: |
             const issueNumber = context.issue.number;
             const commentBody = `${{ steps.comment.outputs.comment_body }}`;
-            const octokit = github.getOctokit(token);
-            octokit.rest.issues.createComment({
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            octokit.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
