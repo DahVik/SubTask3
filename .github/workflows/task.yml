@@ -3,7 +3,6 @@ name: Meme on issue
 on:
   issues:
     types: [opened, closed]
-  workflow_dispatch:  
 
 jobs:
   post_meme:
@@ -22,15 +21,4 @@ jobs:
         run: npm install @octokit/rest
 
       - name: Post Meme Comment
-        run: |
-          const { Octokit } = require("@octokit/rest");
-          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-
-          const issueNumber = context.issue.number;
-          const commentBody = "Here's the meme image: ![Image](https://raw.githubusercontent.com/DahVik/SubTask3/main/$IMAGE_PATH)";
-          octokit.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: issueNumber,
-            body: commentBody,
-          });
+        run: node .github/post-meme-comment.js
