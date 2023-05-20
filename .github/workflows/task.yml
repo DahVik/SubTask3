@@ -32,14 +32,15 @@ jobs:
       - name: Create Comment
         uses: actions/github-script@v4
         with:
-         github-token: ${{ secrets.GITHUB_TOKEN }}
-         script: |
-           const issueNumber = context.issue.number;
-           const commentBody = `${{ steps.comment.outputs.comment_body }}`;
-           const octokit = require('@octokit/rest')();
-           octokit.issues.createComment({
-           owner: context.repo.owner,
-           repo: context.repo.repo,
-           issue_number: issueNumber,
-           body: commentBody
-           });
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = context.issue.number;
+            const commentBody = `${{ steps.comment.outputs.comment_body }}`;
+            const { GitHub, context } = require('@actions/github');
+            const octokit = new GitHub(process.env.GITHUB_TOKEN);
+            octokit.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: issueNumber,
+            body: commentBody
+            });
