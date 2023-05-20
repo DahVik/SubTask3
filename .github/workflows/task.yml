@@ -33,12 +33,19 @@ jobs:
         with:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
-           const issueNumber = github.event.issue.number;
-           const commentBody = `${{ steps.comment.outputs.comment_body }}`;
-           const octokit = github.getOctokit(github.token);
-           octokit.issues.createComment({
-           owner: github.context.repo.owner,
-           repo: github.context.repo.repo,
-           issue_number: issueNumber,
-           body: commentBody
-           });
+          const { data: issue } = await github.issues.get({
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          issue_number: context.issue.number
+          });
+
+          const issueNumber = issue.number;
+          const commentBody = `${{ steps.comment.outputs.comment_body }}`;
+
+          await github.issues.createComment({
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          issue_number: issueNumber,
+          body: commentBody
+          });
+
