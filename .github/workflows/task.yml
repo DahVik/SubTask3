@@ -3,6 +3,7 @@ name: Meme on issue
 on:
   issues:
     types: [opened, closed]
+  workflow_dispatch:  
 
 jobs:
   post_meme:
@@ -21,4 +22,4 @@ jobs:
         run: npm install @octokit/rest
 
       - name: Post Meme Comment
-        run: node .github/post-meme-comment.js
+        run: node post-meme-comment.js
