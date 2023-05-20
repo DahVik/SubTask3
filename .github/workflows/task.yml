@@ -29,16 +29,15 @@ jobs:
           echo "::set-output name=comment_body::$COMMENT_BODY"
 
       - name: Create Comment
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const issueNumber = context.issue.number;
-            const commentBody = `${{ steps.comment.outputs.comment_body }}`;
-            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
-            octokit.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issueNumber,
-              body: commentBody
-            });
+        run: |
+         const { Octokit } = require("@octokit/rest");
+         const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+         const issueNumber = context.issue.number;
+         const commentBody = `${steps.comment.outputs.comment_body}`;
+         octokit.issues.createComment({
+         owner: context.repo.owner,
+         repo: context.repo.repo,
+         issue_number: issueNumber,
+         body: commentBody,
+         });
