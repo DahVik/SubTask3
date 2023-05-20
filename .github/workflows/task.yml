@@ -3,6 +3,7 @@ name: Meme on issue
 on:
   issues:
     types: [opened, closed]
+  workflow_dispatch:
 
 jobs:
   post_meme:
