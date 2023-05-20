@@ -1,11 +1,11 @@
-name: Meme on issue 
+name: Meme on issue
 
 on:
   issues:
-     types: [opened,closed]
- 
+    types: [opened, closed]
+
   workflow_dispatch:
-  
+
 jobs:
   post_meme:
     runs-on: ubuntu-latest
@@ -24,7 +24,6 @@ jobs:
       - name: Post Image Comment
         id: comment
         run: |
-          ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
           IMAGE_URL="${{ steps.meme.outputs.url }}"
           COMMENT_BODY="Here's the meme image: ![Image]('"$IMAGE_URL"')"
           echo "::set-output name=comment_body::$COMMENT_BODY"
@@ -32,17 +31,14 @@ jobs:
       - name: Create Comment
         uses: actions/github-script@v4
         with:
-         github-token: ${{ secrets.GITHUB_TOKEN }}
-         script: |
-          const issueNumber = github.context.issue.number;
-          const commentBody = `${{ steps.comment.outputs.comment_body }}`;
-          const octokit = github.getOctokit(context.token);
-          octokit.issues.createComment({
-          owner: github.context.repo.owner,
-          repo: github.context.repo.repo,
-          issue_number: issueNumber,
-          body: commentBody
-          });
-
-
-
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueNumber = github.context.issue.number;
+            const commentBody = `${{ steps.comment.outputs.comment_body }}`;
+            const octokit = github.getOctokit(github.token);
+            octokit.issues.createComment({
+              owner: github.context.repo.owner,
+              repo: github.context.repo.repo,
+              issue_number: issueNumber,
+              body: commentBody
+            });
