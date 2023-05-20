@@ -36,8 +36,8 @@ jobs:
           script: |
             const issueNumber = context.issue.number;
             const commentBody = `${{ steps.comment.outputs.comment_body }}`;
-            const octokit = github.getOctokit(context.token);
-            octokit.issues.createComment({
+            const octokit = github.getOctokit(token);
+            octokit.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
