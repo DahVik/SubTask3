@@ -34,7 +34,7 @@ jobs:
         with:
          github-token: ${{ secrets.GITHUB_TOKEN }}
          script: |
-          const issueNumber = github.context.payload.issue.number;
+          const issueNumber = github.context.issue.number;
           const commentBody = `${{ steps.comment.outputs.comment_body }}`;
           const octokit = github.getOctokit(context.token);
           octokit.issues.createComment({
