@@ -17,7 +17,7 @@ jobs:
       - name: Get Meme URL
         id: meme
         run: |
-          IMAGE_PATH=".\SubTask3\meme1.jpg"
+          IMAGE_PATH="./SubTask3/meme1.jpg"
           IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/$IMAGE_PATH"
           echo "::set-output name=url::$IMAGE_URL"
           
