@@ -1,0 +1,33 @@
+name: Meme on issue and PR
+
+on:
+  issues:
+     types: [opened,closed]
+  pull_request:
+     types: [opened,closed]
+  workflow_dispatch:
+  
+jobs:
+  post_meme:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+       
+      - name: Get Meme URL
+        id: meme
+        run: |
+          IMAGE_PATH=".\SubTask3\meme1.jpg"
+          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/$IMAGE_PATH"
+          echo "::set-output name=url::$IMAGE_URL"
+          
+      - name: Post Image Comment
+        run: |
+          ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
+          IMAGE_URL="${{ steps.meme.outputs.url }}"
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"body": "![Image]('"$IMAGE_URL"')"}' \
+            "https://api.github.com/repos/${{ github.repository }}/issues/$ISSUE_NUMBER/comments"    
