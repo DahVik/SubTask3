@@ -3,41 +3,33 @@ name: Meme on issue
 on:
   issues:
     types: [opened, closed]
-  workflow_dispatch:
 
 jobs:
   post_meme:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Get Meme URL
-        id: meme
-        run: |
-          IMAGE_PATH="./SubTask3/meme1.jpg"
-          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/$IMAGE_PATH"
-          echo "::set-output name=url::$IMAGE_URL"
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
 
-      - name: Post Image Comment
-        id: comment
-        run: |
-          ISSUE_NUMBER=$(jq --raw-output .issue.number "$GITHUB_EVENT_PATH")
-          IMAGE_URL="${{ steps.meme.outputs.url }}"
-          COMMENT_BODY="Here's the meme image: ![Image]('"$IMAGE_URL"')"
-          echo "::set-output name=comment_body::$COMMENT_BODY"
+      - name: Install dependencies
+        run: npm install @octokit/rest
 
-      - name: Create Comment
+      - name: Post Meme Comment
         run: |
-         const { Octokit } = require("@octokit/rest");
-         const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+          const { Octokit } = require("@octokit/rest");
+          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-         const issueNumber = context.issue.number;
-         const commentBody = `${steps.comment.outputs.comment_body}`;
-         octokit.issues.createComment({
-         owner: context.repo.owner,
-         repo: context.repo.repo,
-         issue_number: issueNumber,
-         body: commentBody,
-         });
+          const issueNumber = context.issue.number;
+          const commentBody = "Here's the meme image: ![Image](https://raw.githubusercontent.com/DahVik/SubTask3/main/$IMAGE_PATH)";
+          octokit.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: issueNumber,
+            body: commentBody,
+          });
