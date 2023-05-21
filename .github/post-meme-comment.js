@@ -5,7 +5,7 @@ async function run() {
     const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
     const issueNumber = process.env.GITHUB_EVENT.issue.number;
-    const commentBody = "Here's the meme image: ![Image](URL_TO_YOUR_IMAGE)";
+    const commentBody = "Here's the meme image: ![Image](https://raw.githubusercontent.com/DahVik/SubTask3/main/$IMAGE_PATH)";
 
     await octokit.issues.createComment({
       owner: process.env.GITHUB_REPOSITORY_OWNER,
